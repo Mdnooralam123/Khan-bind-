@@ -29,39 +29,24 @@ PLATFORM_MAP = {
 
 
 # ══════════════════════════════════════════════════════════════
-#   ✨ AUTO-DETECT BASE URL (Vercel / Localhost / Any Host)
+#   AUTO-DETECT BASE URL
 # ══════════════════════════════════════════════════════════════
 def get_base_url():
-    """
-    Auto-detect base URL:
-    1. VERCEL_URL env var (Vercel auto-provides this)
-    2. API_BASE_URL env var (manual override)
-    3. request.host_url (fallback)
-    4. localhost
-    """
-    # 1. Vercel production URL
     vercel_url = os.environ.get("VERCEL_URL")
     if vercel_url:
         return f"https://{vercel_url}"
-
-    # 2. Manual override
     api_base = os.environ.get("API_BASE_URL")
     if api_base:
         return api_base.rstrip("/")
-
-    # 3. Request host (live)
     try:
         return request.host_url.rstrip("/")
     except Exception:
         pass
-
-    # 4. Fallback
     port = os.environ.get("PORT", "8001")
     return f"http://127.0.0.1:{port}"
 
 
 def get_credits():
-    """Fresh credits with auto-detected base URL."""
     return {
         "🎯 Credit": "KHAN",
         "📢 Join For More": "Telegram: @KHAN",
@@ -386,13 +371,13 @@ class GarenaBind:
 
 
 # ══════════════════════════════════════════════════════════════
-#   ✨ RESPONSE BUILDER (with auto Base URL + Examples)
+#   RESPONSE BUILDER (hatke style — only examples)
 # ══════════════════════════════════════════════════════════════
 def build_response(success, title, code, total_time, api_time, sections=None, error=None, examples=None):
     base = get_base_url()
     resp = {
         **get_credits(),
-        "━━━━━━━━━━━━━━━━━━━━": "━━━━━━━━━━━━━━━━━━━━",
+        "═══════════════════════════════════": "═══════════════════════════════════",
         "✅ STATUS": title,
         "🔢 Response Code": code,
     }
@@ -400,20 +385,21 @@ def build_response(success, title, code, total_time, api_time, sections=None, er
     if error:
         resp["❌ Error"] = error
 
-    resp["━━━━━ ⏱️ TIMING ━━━━━"] = "━━━━━━━━━━━━━━━━━━━━"
+    resp["─────────── ⏱️ TIMING ───────────"] = "───────────────────────────────────"
     resp["⏳ Total Time"] = f"{total_time} sec"
     resp["🌐 API Time"] = f"{api_time} sec"
 
     if sections:
         for section_name, section_data in sections.items():
-            resp[f"━━━━━ {section_name} ━━━━━"] = "━━━━━━━━━━━━━━━━━━━━"
+            resp[f"─────────── {section_name} ───────────"] = "───────────────────────────────────"
             resp.update(section_data)
 
     if examples:
-        resp["━━━━━ 💡 EXAMPLES ━━━━━"] = "━━━━━━━━━━━━━━━━━━━━"
+        resp["═══════════ 💡 EXAMPLES ═══════════"] = "═══════════════════════════════════"
         for k, v in examples.items():
             resp[k] = v
 
+    resp["═══════════════════════════════════": "═══════════════════════════════════"] = "═══════════════════════════════════"
     return resp
 
 
@@ -424,32 +410,82 @@ def build_response(success, title, code, total_time, api_time, sections=None, er
 def index():
     base = get_base_url()
     return jsonify({
-        **get_credits(),
-        "━━━━━━━━━━━━━━━━━━━━": "━━━━━━━━━━━━━━━━━━━━",
-        "✅ STATUS": "active",
-        "⚙️ Service": "Garena Account Management API",
-        "🔢 Version": "5.0 (No JWT)",
+        "🎯 Credit": "KHAN",
+        "📢 Join For More": "Telegram: @KHAN",
+        "🌐 Base URL": base,
 
-        "━━━━━ 📡 ENDPOINTS ━━━━━": "━━━━━━━━━━━━━━━━━━━━",
-        "🔍 /check-recovery": "Check recovery email status (eat or access)",
-        "🔍 /checkbind": "Alias for /check-recovery",
-        "📮 /sendotp": "Send OTP to email (eat or access, email)",
-        "🔗 /bindemail": "Bind email using OTP and security_code",
-        "❌ /cancelrequest": "Cancel any pending bind/unbind/change request",
-        "🔓 /unbindemail": "Unbind email using security_code",
-        "🔄 /changeemail": "Change recovery email",
-        "📱 /platforms": "Get supported platform types",
+        "═══════════════════════════════════": "═══════════════════════════════════",
+        "⚙️ SERVICE INFO": "Garena Account Management API",
+        "🔢 VERSION": "5.0 (No JWT)",
+        "✅ STATUS": "🟢 ONLINE",
 
-        "━━━━━ 💡 EXAMPLES ━━━━━": "━━━━━━━━━━━━━━━━━━━━",
-        "🔍 Check Recovery": f"{base}/check-recovery?access=YOUR_ACCESS_TOKEN",
-        "🔍 Check Recovery (EAT)": f"{base}/check-recovery?eat=YOUR_EAT_TOKEN",
-        "📮 Send OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email=user@example.com",
-        "🔗 Bind Email": f"{base}/bindemail?access=YOUR_ACCESS_TOKEN&email=user@example.com&otp=123456&security_code=abcd1234",
-        "❌ Cancel Request": f"{base}/cancelrequest?access=YOUR_ACCESS_TOKEN",
-        "🔓 Unbind Email": f"{base}/unbindemail?access=YOUR_ACCESS_TOKEN&security_code=abcd1234",
-        "🔄 Change Email": f"{base}/changeemail?access=YOUR_ACCESS_TOKEN&new_email=new@example.com&new_otp=123456&security_code=abcd1234",
-        "🔄 Change Email (OTP)": f"{base}/changeemail?access=YOUR_ACCESS_TOKEN&new_email=new@example.com&new_otp=123456&current_email=old@example.com&otp=654321",
-        "📱 Platforms": f"{base}/platforms"
+        "═══════════════ 📡 ENDPOINTS ═══════════════": "═══════════════════════════════════",
+
+        "🔍 1. CHECK RECOVERY": {
+            "endpoint": "/check-recovery",
+            "alias": "/checkbind",
+            "method": "GET",
+            "params": "eat OR access",
+            "example": f"{base}/check-recovery?access=YOUR_ACCESS_TOKEN"
+        },
+
+        "📮 2. SEND OTP": {
+            "endpoint": "/sendotp",
+            "method": "GET",
+            "params": "eat OR access, email",
+            "example": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email=user@example.com"
+        },
+
+        "🔗 3. BIND EMAIL": {
+            "endpoint": "/bindemail",
+            "method": "GET",
+            "params": "eat OR access, email, otp, security_code",
+            "example": f"{base}/bindemail?access=YOUR_ACCESS_TOKEN&email=user@example.com&otp=123456&security_code=abcd1234"
+        },
+
+        "🔄 4. CHANGE EMAIL": {
+            "endpoint": "/changeemail",
+            "method": "GET",
+            "params": "new_email, new_otp, (security_code OR current_email+otp)",
+            "example_1": f"{base}/changeemail?access=YOUR_ACCESS_TOKEN&new_email=new@example.com&new_otp=123456&security_code=abcd1234",
+            "example_2": f"{base}/changeemail?access=YOUR_ACCESS_TOKEN&new_email=new@example.com&new_otp=123456&current_email=old@example.com&otp=654321"
+        },
+
+        "🔓 5. UNBIND EMAIL": {
+            "endpoint": "/unbindemail",
+            "method": "GET",
+            "params": "eat OR access, security_code",
+            "example": f"{base}/unbindemail?access=YOUR_ACCESS_TOKEN&security_code=abcd1234"
+        },
+
+        "❌ 6. CANCEL REQUEST": {
+            "endpoint": "/cancelrequest",
+            "method": "GET",
+            "params": "eat OR access",
+            "example": f"{base}/cancelrequest?access=YOUR_ACCESS_TOKEN"
+        },
+
+        "📱 7. PLATFORMS": {
+            "endpoint": "/platforms",
+            "method": "GET",
+            "params": "none",
+            "example": f"{base}/platforms"
+        },
+
+        "═══════════════ 💡 QUICK FLOW ═══════════════": "═══════════════════════════════════",
+        "📝 Step 1": "Send OTP → /sendotp?access=TOKEN&email=xxx",
+        "📝 Step 2": "Bind Email → /bindemail?access=TOKEN&email=xxx&otp=123456&security_code=xxx",
+        "📝 Step 3": "Check Status → /check-recovery?access=TOKEN",
+        "📝 Cancel": "Cancel → /cancelrequest?access=TOKEN",
+
+        "═══════════════ 🔑 TOKEN TYPES ═══════════════": "═══════════════════════════════════",
+        "🅰️ access": "Garena Access Token (direct)",
+        "🅱️ eat": "EAT Token (auto-converted to access)",
+
+        "═══════════════ ⚠️ NOTE ═══════════════": "═══════════════════════════════════",
+        "💡 Note": "Provide EITHER 'eat' OR 'access', not both",
+        "⏱️ Timeout": "10 seconds per request",
+        "⚡ Fast": "Session reuse enabled"
     })
 
 
@@ -469,7 +505,7 @@ def get_access_token_from_args(args):
 
 
 # ─────────────────────────────────────────────
-#   /check-recovery  &  /checkbind
+#   /check-recovery & /checkbind
 # ─────────────────────────────────────────────
 @app.route('/check-recovery', methods=['GET'])
 @app.route('/checkbind', methods=['GET'])
@@ -537,7 +573,8 @@ def check_recovery():
         True, "✅ Success", 200, total_time, api_time, sections,
         examples={
             "📮 Send OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email=user@example.com",
-            "🔄 Change Email": f"{base}/changeemail?access=YOUR_ACCESS_TOKEN&new_email=new@example.com&new_otp=123456&security_code=abcd1234"
+            "🔄 Change Email": f"{base}/changeemail?access=YOUR_ACCESS_TOKEN&new_email=new@example.com&new_otp=123456&security_code=abcd1234",
+            "❌ Cancel Request": f"{base}/cancelrequest?access=YOUR_ACCESS_TOKEN"
         }
     ))
 
@@ -557,7 +594,8 @@ def platforms():
             "ℹ️ INFO": {"🔢 Total Platforms": len(PLATFORM_MAP)}
         },
         examples={
-            "🔍 Check Recovery": f"{base}/check-recovery?access=YOUR_ACCESS_TOKEN"
+            "🔍 Check Recovery": f"{base}/check-recovery?access=YOUR_ACCESS_TOKEN",
+            "📮 Send OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email=user@example.com"
         }
     ))
 
@@ -666,7 +704,8 @@ def bind_email():
             {"📧 EMAIL INFO": {"📩 Email": email}},
             error="OTP verification failed",
             examples={
-                "📮 Resend OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email={email}"
+                "📮 Resend OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email={email}",
+                "🔄 Try again": f"{base}/bindemail?access=YOUR_ACCESS_TOKEN&email={email}&otp=NEW_OTP&security_code=abcd1234"
             }
         )), 400
 
@@ -693,7 +732,8 @@ def bind_email():
         {"📧 EMAIL INFO": {"📩 Email": email}},
         error="Bind failed",
         examples={
-            "📮 Resend OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email={email}"
+            "📮 Resend OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email={email}",
+            "🔄 Try again": f"{base}/bindemail?access=YOUR_ACCESS_TOKEN&email={email}&otp=NEW_OTP&security_code=abcd1234"
         }
     )), 400
 
@@ -728,7 +768,8 @@ def cancel_request():
             True, "✅ Request Cancelled", 200, total_time, api_time,
             {"📡 SERVER": {"📨 Response": resp}},
             examples={
-                "🔍 Check Status": f"{base}/check-recovery?access=YOUR_ACCESS_TOKEN"
+                "🔍 Check Status": f"{base}/check-recovery?access=YOUR_ACCESS_TOKEN",
+                "📮 Send OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email=user@example.com"
             }
         ))
 
@@ -963,9 +1004,11 @@ def not_found(e):
     base = get_base_url()
     return jsonify({
         **get_credits(),
+        "═══════════════════════════════════": "═══════════════════════════════════",
         "✅ STATUS": "❌ Endpoint Not Found",
         "🔢 Response Code": 404,
-        "━━━━━ 📡 AVAILABLE ━━━━━": "━━━━━━━━━━━━━━━━━━━━",
+
+        "═══════════ 📡 AVAILABLE ═══════════": "═══════════════════════════════════",
         "1": "/check-recovery",
         "2": "/checkbind",
         "3": "/sendotp",
@@ -975,7 +1018,7 @@ def not_found(e):
         "7": "/changeemail",
         "8": "/platforms",
 
-        "━━━━━ 💡 EXAMPLES ━━━━━": "━━━━━━━━━━━━━━━━━━━━",
+        "═══════════ 💡 EXAMPLES ═══════════": "═══════════════════════════════════",
         "🔍 Check Recovery": f"{base}/check-recovery?access=YOUR_ACCESS_TOKEN",
         "📮 Send OTP": f"{base}/sendotp?access=YOUR_ACCESS_TOKEN&email=user@example.com",
         "🔗 Bind Email": f"{base}/bindemail?access=YOUR_ACCESS_TOKEN&email=user@example.com&otp=123456&security_code=abcd1234",
