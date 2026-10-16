@@ -371,10 +371,9 @@ class GarenaBind:
 
 
 # ══════════════════════════════════════════════════════════════
-#   RESPONSE BUILDER (hatke style — only examples)
+#   RESPONSE BUILDER
 # ══════════════════════════════════════════════════════════════
 def build_response(success, title, code, total_time, api_time, sections=None, error=None, examples=None):
-    base = get_base_url()
     resp = {
         **get_credits(),
         "═══════════════════════════════════": "═══════════════════════════════════",
@@ -399,12 +398,11 @@ def build_response(success, title, code, total_time, api_time, sections=None, er
         for k, v in examples.items():
             resp[k] = v
 
-    resp["═══════════════════════════════════": "═══════════════════════════════════"] = "═══════════════════════════════════"
     return resp
 
 
 # ══════════════════════════════════════════════════════════════
-#   FLASK ENDPOINTS
+#   HOME
 # ══════════════════════════════════════════════════════════════
 @app.route('/')
 def index():
