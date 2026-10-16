@@ -8,6 +8,10 @@ import time
 from urllib.parse import urlparse, parse_qs
 
 app = Flask(__name__)
+app.json.sort_keys = False   # ✨ YEH LINE — keys ka order preserve karega
+# Agar purana Flask hai to neeche wali line use karo (dono ek saath mat rakho)
+# app.config['JSON_SORT_KEYS'] = False
+
 SESSION = requests.Session()
 SESSION.verify = False
 requests.packages.urllib3.disable_warnings()
